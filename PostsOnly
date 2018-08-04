@@ -1,0 +1,14 @@
+SELECT
+    Convert(date, Comments.created) As [Date],
+    IIF(isjson(json_metadata) = 1, IIF(CHARINDEX('/', json_value(json_metadata, '$.app')) > 0, SUBSTRING(json_value(json_metadata, '$.app'), 1, CHARINDEX('/', json_value(json_metadata, '$.app'))-1),json_value(json_metadata, '$.app')), null) as [SummarisedApp],
+    Comments.author AS [Author],
+    CONVERT(REAL,Comments.pending_payout_value) AS [PendingPayoutValue],
+    CONVERT(REAL,Comments.curator_payout_value) AS [CuratorPayoutValue],
+    CONVERT(REAL,Comments.total_payout_value) AS [TotalPayoutValue]
+
+FROM
+    Comments (NOLOCK)
+    
+WHERE
+    (Convert(date, Comments.created) >= '2018-06-24' AND Convert(date, Comments.created) <= '2018-07-31') AND
+    depth = 0 
